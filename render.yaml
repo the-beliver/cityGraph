@@ -24,3 +24,5 @@ services:
         value: "true"
       - key: SEED_DEFAULT_USER
         value: "false"
+
+

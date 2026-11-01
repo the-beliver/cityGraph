@@ -12,3 +12,5 @@ sim:
 demo:
 	(cd backend && python3 -m uvicorn main:app --port 8000) &
 	cd frontend && npm run dev
+
+

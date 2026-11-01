@@ -2,6 +2,8 @@
 
 CityGraph is an educational prototype for simulated infrastructure risk scenarios. **It is not an emergency response service.**
 
+
+
 ## Deployment precautions
 
 - Use unique, strong secrets for JWT signing and authentication, and avoid default demo accounts on public deployments.

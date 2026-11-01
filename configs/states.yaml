@@ -10,3 +10,5 @@ forced_critical_rules:
   - hospital_occupancy_gt_100
   - zone_loses_all_hospital_road_access
   - hospital_substation_down_gt_1h
+
+

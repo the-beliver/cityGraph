@@ -428,3 +428,5 @@ async def analyze_custom_point(
 
 if __name__ == "__main__":
     uvicorn.run("water_quality_service:app", host="0.0.0.0", port=8050, reload=True)
+
+

@@ -8,6 +8,8 @@ Thanks for helping improve this educational urban infrastructure risk simulator.
 - Keep **simulated/reconstructed data clearly labeled**. Never present scenario outputs as real-time evacuation guidance.
 - Don't commit API keys, passwords, local databases, or real sensitive geolocation data.
 
+
+
 ## Development checks
 - Backend dependencies: `cd backend && pip install -r requirements.txt`
 - Frontend dependencies: `cd frontend && npm install`

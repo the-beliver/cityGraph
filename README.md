@@ -50,6 +50,8 @@ The project includes water-quality analysis routes based on spectral indices and
 ### Fire defense
 The fire-defense router models fire-prone zones, resource allocation, and evacuation routing for Delhi and Mumbai scenarios.
 
+
+
 ## Local setup
 
 ### Backend
