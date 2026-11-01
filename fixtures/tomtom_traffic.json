@@ -1,5 +1,99 @@
 {
   "offline": true,
   "source": "tomtom_traffic",
-  "sample_value": 1.0
+  "sample_value": 1.0,
+  "city": "Delhi NCR",
+  "last_updated": "2026-10-31T22:45:00+05:30",
+  "network_summary": {
+    "overall_congestion_index": 0.74,
+    "status": "HEAVY_CONGESTION",
+    "total_monitored_segments": 6,
+    "blocked_corridors_count": 2
+  },
+  "segments": [
+    {
+      "segment_id": "seg_ito_ring_road",
+      "corridor_name": "Ring Road - ITO Junction",
+      "road_type": "Primary Arterial",
+      "zone_id": "Central Delhi",
+      "coordinates": [28.6289, 77.2411],
+      "current_speed_kmh": 8.5,
+      "free_flow_speed_kmh": 50.0,
+      "congestion_level": 0.88,
+      "delay_seconds": 920,
+      "road_blocked": true,
+      "blockage_reason": "Waterlogging 0.45m under railway bridge and high volume backflow",
+      "road_condition": "WATERLOGGED"
+    },
+    {
+      "segment_id": "seg_kashmere_gate",
+      "corridor_name": "ISBT Kashmere Gate Outer Ring Road",
+      "road_type": "Primary Arterial",
+      "zone_id": "North Delhi",
+      "coordinates": [28.6692, 77.2289],
+      "current_speed_kmh": 12.0,
+      "free_flow_speed_kmh": 55.0,
+      "congestion_level": 0.82,
+      "delay_seconds": 680,
+      "road_blocked": false,
+      "blockage_reason": null,
+      "road_condition": "HEAVY_CONGESTION"
+    },
+    {
+      "segment_id": "seg_nh48_mahipalpur",
+      "corridor_name": "NH-48 Mahipalpur Airport Corridor",
+      "road_type": "National Highway",
+      "zone_id": "South West Delhi",
+      "coordinates": [28.5441, 77.1265],
+      "current_speed_kmh": 38.0,
+      "free_flow_speed_kmh": 65.0,
+      "congestion_level": 0.45,
+      "delay_seconds": 180,
+      "road_blocked": false,
+      "blockage_reason": null,
+      "road_condition": "MODERATE_TRAFFIC"
+    },
+    {
+      "segment_id": "seg_minto_bridge",
+      "corridor_name": "Minto Bridge Underpass",
+      "road_type": "Urban Underpass",
+      "zone_id": "New Delhi",
+      "coordinates": [28.6358, 77.2255],
+      "current_speed_kmh": 0.0,
+      "free_flow_speed_kmh": 40.0,
+      "congestion_level": 1.0,
+      "delay_seconds": 1800,
+      "road_blocked": true,
+      "blockage_reason": "Submerged underpass (water depth 1.2m); traffic closed by Delhi Police",
+      "road_condition": "BLOCKED"
+    },
+    {
+      "segment_id": "seg_barapullah",
+      "corridor_name": "Barapullah Elevated Corridor",
+      "road_type": "Elevated Expressway",
+      "zone_id": "South Delhi",
+      "coordinates": [28.5835, 77.2410],
+      "current_speed_kmh": 42.0,
+      "free_flow_speed_kmh": 60.0,
+      "congestion_level": 0.32,
+      "delay_seconds": 95,
+      "road_blocked": false,
+      "blockage_reason": null,
+      "road_condition": "CLEAR"
+    },
+    {
+      "segment_id": "seg_aiims_flyover",
+      "corridor_name": "AIIMS Trauma Flyover - Ring Road",
+      "road_type": "Hospital Corridor",
+      "zone_id": "South Delhi",
+      "coordinates": [28.5672, 77.2100],
+      "current_speed_kmh": 22.0,
+      "free_flow_speed_kmh": 45.0,
+      "congestion_level": 0.55,
+      "delay_seconds": 240,
+      "road_blocked": false,
+      "blockage_reason": null,
+      "road_condition": "CONGESTED"
+    }
+  ]
 }

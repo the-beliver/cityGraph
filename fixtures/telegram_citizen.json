@@ -1,5 +1,63 @@
 {
   "offline": true,
   "source": "telegram_citizen",
-  "sample_value": 1.0
+  "sample_value": 1.0,
+  "reports": [
+    {
+      "report_id": "rep_cit_001",
+      "category": "waterlogging",
+      "title": "Severe Waterlogging at Minto Bridge",
+      "description": "Water level reaching over 3 feet under Minto Road railway bridge. DTC bus partially submerged. Traffic completely halted.",
+      "latitude": 28.6358,
+      "longitude": 77.2255,
+      "address": "Minto Road Underpass, Connaught Place Outer",
+      "severity": "CRITICAL",
+      "timestamp": "2026-10-31T22:15:00+05:30",
+      "verification_status": "VERIFIED",
+      "reporter_name": "Citizen RWA Connaught Place",
+      "corroboration_count": 4
+    },
+    {
+      "report_id": "rep_cit_002",
+      "category": "flooding",
+      "title": "Yamuna Riverbank Overflow near Kashmere Gate",
+      "description": "Yamuna water entering service lane near Kashmere Gate ISBT. Monastery Market shops beginning emergency evacuation.",
+      "latitude": 28.6692,
+      "longitude": 77.2289,
+      "address": "Bela Road, near Kashmere Gate Monastery Market",
+      "severity": "HIGH",
+      "timestamp": "2026-10-31T22:25:00+05:30",
+      "verification_status": "VERIFIED",
+      "reporter_name": "Delhi Traffic Sentinel Volunteer",
+      "corroboration_count": 3
+    },
+    {
+      "report_id": "rep_cit_003",
+      "category": "road_blockage",
+      "title": "Fallen Tree & Electric Pole on Ring Road",
+      "description": "High wind and thunderstorm uprooted a large neem tree across two lanes opposite WHO building near ITO.",
+      "latitude": 28.6289,
+      "longitude": 77.2411,
+      "address": "Ring Road opposite WHO Building, ITO",
+      "severity": "HIGH",
+      "timestamp": "2026-10-31T22:30:00+05:30",
+      "verification_status": "UNVERIFIED",
+      "reporter_name": "Commuter Rahul S.",
+      "corroboration_count": 2
+    },
+    {
+      "report_id": "rep_cit_004",
+      "category": "fire",
+      "title": "Transformer Sparking & Local Smoke",
+      "description": "Electrical transformer near Okhla Phase 2 industrial substation sparking with loud pops and chemical smoke.",
+      "latitude": 28.5305,
+      "longitude": 77.2715,
+      "address": "Okhla Industrial Area Phase-II Substation",
+      "severity": "CRITICAL",
+      "timestamp": "2026-10-31T22:38:00+05:30",
+      "verification_status": "VERIFIED",
+      "reporter_name": "Security Desk Okhla",
+      "corroboration_count": 2
+    }
+  ]
 }

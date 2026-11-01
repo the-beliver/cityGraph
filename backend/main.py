@@ -856,12 +856,8 @@ def find_safe_route() -> List[str]:
         return []
 
 
-def run_heavy_rain_simulation(rainfall_level: int) -> dict:
-    reset_simulation_state()
-
-    simulation_state["active"] = True
-    simulation_state["scenario"] = "heavy_rain"
-
+def simulate_heavy_rain_on_state(rainfall_level: int, graph: nx.Graph, nodes: Dict[str, dict]) -> dict:
+    """Run the existing cascade model against a caller-owned graph state."""
     timeline = []
     failed_nodes = []
     affected_nodes = []
@@ -869,18 +865,18 @@ def run_heavy_rain_simulation(rainfall_level: int) -> dict:
     # Step 1: Find drainage nodes
     drainage_nodes = [
         node_id
-        for node_id, data in node_data.items()
+        for node_id, data in nodes.items()
         if data["type"] == "drainage"
     ]
 
     # Step 2: Increase load because of rainfall
     for node_id in drainage_nodes:
-        node_data[node_id]["current_load"] += rainfall_level // 2
+        nodes[node_id]["current_load"] += rainfall_level // 2
 
-        capacity = node_data[node_id]["capacity"]
-        current_load = node_data[node_id]["current_load"]
+        capacity = nodes[node_id]["capacity"]
+        current_load = nodes[node_id]["current_load"]
 
-        node_data[node_id]["risk"] = round(
+        nodes[node_id]["risk"] = round(
             min(current_load / capacity, 1.0),
             2,
         )
@@ -888,16 +884,16 @@ def run_heavy_rain_simulation(rainfall_level: int) -> dict:
     overloaded_drainage = [
         node_id
         for node_id in drainage_nodes
-        if node_data[node_id]["current_load"]
-        > node_data[node_id]["capacity"]
+        if nodes[node_id]["current_load"]
+        > nodes[node_id]["capacity"]
     ]
 
     # Step 3: Drainage failure
     for node_id in overloaded_drainage:
-        node_data[node_id]["status"] = "failed"
-        node_data[node_id]["failure_reason"] = (
-            f"Stormwater intake capacity exceeded ({node_data[node_id]['current_load']}/"
-            f"{node_data[node_id]['capacity']} units); backflow active."
+        nodes[node_id]["status"] = "failed"
+        nodes[node_id]["failure_reason"] = (
+            f"Stormwater intake capacity exceeded ({nodes[node_id]['current_load']}/"
+            f"{nodes[node_id]['capacity']} units); backflow active."
         )
         failed_nodes.append(node_id)
 
@@ -917,20 +913,20 @@ def run_heavy_rain_simulation(rainfall_level: int) -> dict:
     road_nodes = set()
 
     for drainage_node in overloaded_drainage:
-        neighbors = list(city_graph.neighbors(drainage_node))
+        neighbors = list(graph.neighbors(drainage_node))
 
         for neighbor in neighbors:
-            if node_data[neighbor]["type"] == "road":
+            if nodes[neighbor]["type"] == "road":
                 road_nodes.add(neighbor)
 
     for road_node in road_nodes:
-        node_data[road_node]["risk"] = round(
-            min(node_data[road_node]["risk"] + 0.45, 1.0),
+        nodes[road_node]["risk"] = round(
+            min(nodes[road_node]["risk"] + 0.45, 1.0),
             2,
         )
 
-        node_data[road_node]["status"] = "affected"
-        node_data[road_node]["failure_reason"] = (
+        nodes[road_node]["status"] = "affected"
+        nodes[road_node]["failure_reason"] = (
             "Surface runoff and road flooding risk propagated from adjacent failed drainage regulator."
         )
         affected_nodes.append(road_node)
@@ -951,10 +947,10 @@ def run_heavy_rain_simulation(rainfall_level: int) -> dict:
     nearby_nodes = set()
 
     for road_node in road_nodes:
-        for neighbor in city_graph.neighbors(road_node):
-            if node_data[neighbor]["status"] == "safe":
-                node_data[neighbor]["risk"] = round(
-                    min(node_data[neighbor]["risk"] + 0.20, 1.0),
+        for neighbor in graph.neighbors(road_node):
+            if nodes[neighbor]["status"] == "safe":
+                nodes[neighbor]["risk"] = round(
+                    min(nodes[neighbor]["risk"] + 0.20, 1.0),
                     2,
                 )
                 nearby_nodes.add(neighbor)
@@ -972,33 +968,56 @@ def run_heavy_rain_simulation(rainfall_level: int) -> dict:
     )
 
     # Step 6: Calculate safer route
-    safe_route = find_safe_route()
+    route_graph = graph.copy()
+    for node_id, data in nodes.items():
+        if data["status"] == "failed" and node_id in route_graph:
+            route_graph.remove_node(node_id)
+    for first, second, edge_data in route_graph.edges(data=True):
+        edge_data["weight"] = edge_data.get("distance", 1) + int(
+            (nodes[first]["risk"] + nodes[second]["risk"]) * 20
+        )
+    try:
+        safe_route = nx.shortest_path(route_graph, source="node_1", target="node_2", weight="weight")
+    except (nx.NetworkXNoPath, nx.NodeNotFound):
+        safe_route = []
 
-    timeline.append(
-        {
-            "step": 4,
-            "title": "Emergency route calculation",
-            "description": (
-                "The system calculated a route avoiding failed nodes."
-            ),
-            "nodes": safe_route,
-        }
-    )
+    timeline.append({"step": 4, "title": "Emergency route calculation", "description": "The system calculated a route avoiding failed nodes.", "nodes": safe_route})
 
-    for node_id, data in node_data.items():
+    for node_id, data in nodes.items():
         data["risk_score"] = data["risk"]
         data["load"] = data["current_load"]
 
-    simulation_state["failed_nodes"] = failed_nodes
-    simulation_state["affected_nodes"] = list(affected_nodes)
-    simulation_state["risk_scores"] = {
-        node_id: data["risk"]
-        for node_id, data in node_data.items()
+    return {
+        "active": True,
+        "scenario": "heavy_rain",
+        "nodes": list(nodes.values()),
+        "edges": [{"source": first, "target": second, "distance": data.get("distance", 1)} for first, second, data in graph.edges(data=True)],
+        "failed_nodes": failed_nodes,
+        "affected_nodes": list(affected_nodes),
+        "risk_scores": {node_id: data["risk"] for node_id, data in nodes.items()},
+        "timeline": timeline,
+        "safe_route": safe_route,
+        "summary": {
+            "total_nodes": len(nodes),
+            "failed_nodes": len(failed_nodes),
+            "affected_nodes": len(affected_nodes),
+            "highest_risk_node": max(nodes, key=lambda node_id: nodes[node_id].get("risk", 0)),
+            "highest_risk_asset_name": nodes[max(nodes, key=lambda node_id: nodes[node_id].get("risk", 0))].get("name"),
+        },
     }
-    simulation_state["timeline"] = timeline
-    simulation_state["safe_route"] = safe_route
 
-    return get_complete_graph_response()
+
+def run_heavy_rain_simulation(rainfall_level: int) -> dict:
+    reset_simulation_state()
+    simulation_state["active"] = True
+    simulation_state["scenario"] = "heavy_rain"
+    result = simulate_heavy_rain_on_state(rainfall_level, city_graph, node_data)
+    simulation_state["failed_nodes"] = result["failed_nodes"]
+    simulation_state["affected_nodes"] = result["affected_nodes"]
+    simulation_state["risk_scores"] = result["risk_scores"]
+    simulation_state["timeline"] = result["timeline"]
+    simulation_state["safe_route"] = result["safe_route"]
+    return result
 
 
 def get_complete_graph_response() -> dict:
